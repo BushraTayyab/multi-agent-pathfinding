@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Multi-Agent Pathfinding | A* with Adversarial AI - Hunter vs Runner">
+    <meta name="author" content="Your Name">
+    <title>⚔️ Multi-Agent Pathfinding | A* Adversarial Duel</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="dream-container">
+    <div class="header">
+        <h1>⚔️ MULTI-AGENT PATHFINDING</h1>
+        <div class="sub">
+            <span class="badge">✨ A* Algorithm</span>
+            <span class="badge">🎯 Adversarial Hunter</span>
+            <span class="badge">🧠 Predictive Intercept</span>
+        </div>
+        <div class="legend">
+            <span>🟢 Runner (Start)</span>
+            <span>🔴 Hunter</span>
+            <span>⭐ Goal</span>
+            <span>⬛ Wall</span>
+            <span>✨ Found Path</span>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="canvas-wrapper">
+            <canvas id="gridCanvas" width="550" height="550"></canvas>
+        </div>
+
+        <div class="controls-panel">
+            <div class="stats">
+                <div class="stat-item">
+                    <span>📊 Nodes Explored</span>
+                    <span class="stat-value" id="nodesCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>🟢 Path Length</span>
+                    <span class="stat-value" id="pathLength">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>🔴 Hunter Steps</span>
+                    <span class="stat-value" id="hunterSteps">0</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="resetBtn">🔄 Reset</button>
+                <button id="clearWallsBtn">🗑 Clear Walls</button>
+                <button id="randomWallsBtn">🎲 Random Walls</button>
+            </div>
+
+            <div class="slider-container">
+                <label>⚡ Speed <span id="speedValue">Normal</span></label>
+                <input type="range" id="speedSlider" min="0" max="2" step="0.1" value="1">
+            </div>
+
+            <div class="status" id="statusMsg">
+                🧠 Drag Runner/Hunter/Goal | Click to draw walls
+            </div>
+
+            <div class="btn-group">
+                <button id="runBtn" class="primary-btn">▶ RUN</button>
+                <button id="stepBtn">⏯ Step</button>
+                <button id="stopBtn">⏸ Stop</button>
+            </div>
+
+            <div class="info-text">
+                💡 Hunter predicts Runner's path & intercepts!
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+                ✨ Adversarial A* | Multi-Agent Pathfinding (MAPF)
+    </div>
+</div>
+
+<!-- Scripts in order -->
+<script src="js/utils/constants.js"></script>
+<script src="js/utils/gridHelpers.js"></script>
+<script src="js/core/priorityQueue.js"></script>
+<script src="js/core/heuristics.js"></script>
+<script src="js/core/astar.js"></script>
+<script src="js/agents/runner.js"></script>
+<script src="js/agents/hunter.js"></script>
+<script src="js/rendering/draw.js"></script>
+<script src="js/rendering/canvas.js"></script>
+<script src="js/interactions/dragDrop.js"></script>
+<script src="js/interactions/controls.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
