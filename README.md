@@ -1,10 +1,5 @@
 # 🧠 Multi-Agent Pathfinding | Adversarial A*
 
-[![Status](--)]()
-[![License](--)]()
-[![JavaScript](--)]()
-[![Made with](--]()
-
 > *Two agents. One goal. The Runner wants freedom. The Hunter wants capture. Both use A* — but only one thinks ahead.*
 
 ---
