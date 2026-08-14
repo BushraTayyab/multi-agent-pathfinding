@@ -14,7 +14,7 @@ class GameEngine:
         self.runner_explored = 0
         self.hunter_steps = 0
         self.hunter_agent = None
-        print("✅ GameEngine initialized!")
+        print("GameEngine initialized!")
 
     def reset(self) -> Dict[str, Any]:
         self.runner = (2, 10)
@@ -33,7 +33,6 @@ class GameEngine:
         from backend.astar import AStarPathfinder
         pathfinder = AStarPathfinder(self.grid_size)
         result = pathfinder.find_path(self.runner, self.goal, self.walls)
-        # ✅ FIXED: Direct assignment - NO extra wrapping
         self.runner_path = result["path"]
         self.runner_explored = result["explored_count"]
         return result
@@ -103,10 +102,7 @@ class GameEngine:
         return self.get_state_dict()
 
     def get_state_dict(self) -> Dict[str, Any]:
-        # ✅ FIXED: Convert tuples to dicts with proper list comprehension
         walls_list = [{"x": w[0], "y": w[1]} for w in self.walls]
-        
-        # ✅ FIXED: Convert path - NO double wrapping!
         path_list = [{"x": p[0], "y": p[1]} for p in self.runner_path]
         
         return {
@@ -119,7 +115,7 @@ class GameEngine:
                 "status": self.status,
                 "winner": self.winner
             },
-            "runner_path": path_list,  # ✅ This is a flat list, NOT double nested!
+            "runner_path": path_list,
             "runner_explored": self.runner_explored,
             "hunter_steps": self.hunter_steps,
             "game_over": self.status in ["runner_win", "hunter_win"],

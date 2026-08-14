@@ -32,9 +32,6 @@ Most pathfinding demos show a single agent finding a path through static obstacl
 
 | Action | Control |
 |--------|---------|
-| Move 🟢 Runner (start) | Drag the green node |
-| Move 🔴 Hunter | Drag the red node |
-| Move ⭐ Goal | Drag the gold node |
 | Draw walls | Click any cell |
 | Clear a wall | Right-click a wall cell |
 | Clear all walls | Click "Clear Walls" button |

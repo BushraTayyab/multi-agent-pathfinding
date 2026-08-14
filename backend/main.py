@@ -6,23 +6,17 @@ import heapq
 app = Flask(__name__)
 CORS(app)
 
-# ============================================
-# GAME STATE (Global variables)
-# ============================================
 GRID_SIZE = 21
 runner = (2, 10)
 hunter = (18, 10)
 goal = (10, 18)
 walls = []
-status = "paused"  # "paused", "active", "runner_win", "hunter_win"
+status = "paused"
 winner = None
 runner_path = []
 runner_explored = 0
 hunter_steps = 0
 
-# ============================================
-# A* ALGORITHM
-# ============================================
 def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
@@ -69,9 +63,6 @@ def find_path(start, goal_pos, walls_list):
     
     return [], len(explored)
 
-# ============================================
-# STATE MANAGEMENT
-# ============================================
 def update_runner_path():
     global runner_path, runner_explored
     path, explored = find_path(runner, goal, walls)
@@ -80,7 +71,6 @@ def update_runner_path():
     return path
 
 def get_state_dict():
-    """Return clean state dictionary"""
     return {
         "state": {
             "grid_size": GRID_SIZE,
@@ -98,9 +88,6 @@ def get_state_dict():
         "winner": winner
     }
 
-# ============================================
-# API ENDPOINTS
-# ============================================
 @app.route('/')
 def root():
     return jsonify({"message": "Multi-Agent Pathfinding API", "status": "running"})
@@ -189,48 +176,42 @@ def api_pause():
 
 @app.route('/api/tick', methods=['POST'])
 def api_tick():
-    """✅ FIXED: Properly updates state on each tick"""
     global runner, hunter, status, winner, hunter_steps
     
-    print(f"🐛 TICK - Status: {status}")
+    print(f"TICK - Status: {status}")
     
     if status != "active":
         return jsonify(get_state_dict())
     
-    # 1. Move Runner
     update_runner_path()
     if len(runner_path) >= 2:
         old_runner = runner
         runner = runner_path[1]
-        print(f"🏃 Runner: {old_runner} → {runner}")
+        print(f"Runner: {old_runner} -> {runner}")
     else:
-        print("⚠️ No path for Runner!")
+        print("No path for Runner!")
     
-    # 2. Check if Runner reached goal
     if runner == goal:
         status = "runner_win"
         winner = "runner"
-        print("🏆 RUNNER WINS!")
+        print("RUNNER WINS!")
         return jsonify(get_state_dict())
     
-    # 3. Move Hunter (simple chase using A*)
     path_to_runner, _ = find_path(hunter, runner, walls)
     if len(path_to_runner) >= 2:
         old_hunter = hunter
         hunter = path_to_runner[1]
         hunter_steps += 1
-        print(f"🔴 Hunter: {old_hunter} → {hunter}")
+        print(f"Hunter: {old_hunter} -> {hunter}")
     else:
-        print("⚠️ Hunter can't move!")
+        print("Hunter can't move!")
     
-    # 4. Check if Hunter caught Runner
     if hunter == runner:
         status = "hunter_win"
         winner = "hunter"
-        print("💀 HUNTER WINS!")
+        print("HUNTER WINS!")
         return jsonify(get_state_dict())
     
-    # 5. Update path for next tick
     update_runner_path()
     
     return jsonify(get_state_dict())
@@ -251,7 +232,6 @@ def api_random_walls():
 
 @app.route('/api/debug', methods=['GET'])
 def api_debug():
-    """Debug endpoint to see what's happening"""
     return jsonify({
         "runner": runner,
         "hunter": hunter,
@@ -264,6 +244,6 @@ def api_debug():
 
 if __name__ == '__main__':
     update_runner_path()
-    print("🚀 Server starting on http://localhost:8000")
-    print(f"📍 Runner: {runner}, Hunter: {hunter}, Goal: {goal}")
+    print("Server starting on http://localhost:8000")
+    print(f"Runner: {runner}, Hunter: {hunter}, Goal: {goal}")
     app.run(host='0.0.0.0', port=8000, debug=True)

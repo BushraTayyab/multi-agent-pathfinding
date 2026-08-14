@@ -9,82 +9,73 @@
 <body>
 
 <div class="dream-container">
-    <!-- Header -->
     <header class="header">
-        <h1>⚔️ Multi-Agent Pathfinding</h1>
+        <h1>Multi-Agent Pathfinding</h1>
         <div class="sub">
-            <span class="badge">🐍 Flask Backend</span>
-            <span class="badge">🧠 A* Algorithm</span>
-            <span class="badge">🎯 Adversarial Hunter</span>
+            <span class="badge">Flask Backend</span>
+            <span class="badge">A* Algorithm</span>
+            <span class="badge">Adversarial Hunter</span>
         </div>
         <div class="legend">
-            <span>🟢 Runner (Start)</span>
-            <span>🔴 Hunter</span>
-            <span>⭐ Goal</span>
-            <span>⬛ Wall</span>
-            <span>✨ Found Path</span>
+            <span>Runner (Start)</span>
+            <span>Hunter</span>
+            <span>Goal</span>
+            <span>Wall</span>
+            <span>Found Path</span>
         </div>
     </header>
 
-    <!-- Main Layout -->
     <div class="main-grid">
-        <!-- Canvas -->
         <div class="canvas-wrapper">
             <canvas id="gridCanvas" width="550" height="550"></canvas>
-            <div class="canvas-overlay-hint">🖱️ Drag agents • Click to draw walls</div>
+            <div class="canvas-overlay-hint">Drag agents • Click to draw walls</div>
         </div>
 
-        <!-- Controls Panel -->
         <div class="controls-panel">
-            <!-- Stats -->
             <div class="stats">
                 <div class="stat-item">
-                    <span>📊 Nodes Explored</span>
+                    <span>Nodes Explored</span>
                     <span class="stat-value" id="nodesCount">0</span>
                 </div>
                 <div class="stat-item">
-                    <span>🟢 Path Length</span>
+                    <span>Path Length</span>
                     <span class="stat-value" id="pathLength">0</span>
                 </div>
                 <div class="stat-item">
-                    <span>🔴 Hunter Steps</span>
+                    <span>Hunter Steps</span>
                     <span class="stat-value" id="hunterSteps">0</span>
                 </div>
             </div>
 
-            <!-- Status -->
             <div class="status" id="statusMsg">
-                🧠 Click RUN to start the chase
-            </div>
-
-            <!-- Buttons -->
-            <div class="btn-group">
-                <button id="runBtn" class="primary-btn">▶ RUN</button>
-                <button id="pauseBtn">⏸ Pause</button>
-                <button id="resetBtn">🔄 Reset</button>
+                Click RUN to start the chase
             </div>
 
             <div class="btn-group">
-                <button id="clearWallsBtn">🗑 Clear Walls</button>
-                <button id="randomWallsBtn">🎲 Random Walls</button>
+                <button id="runBtn" class="primary-btn">RUN</button>
+                <button id="pauseBtn">Pause</button>
+                <button id="resetBtn">Reset</button>
             </div>
 
-            <!-- Info -->
+            <div class="btn-group">
+                <button id="clearWallsBtn">Clear Walls</button>
+                <button id="randomWallsBtn">Random Walls</button>
+            </div>
+
             <div class="info-text">
-                💡 Hunter predicts Runner's path &amp; intercepts!
+                Hunter predicts Runner's path &amp; intercepts!
             </div>
             <div class="info-text" style="font-size:10px; color:#4a5f8a;">
-                ⚡ Flask backend running on port 8000
+                Flask backend running on port 8000
             </div>
         </div>
     </div>
 
     <footer class="footer">
-        ✨ Adversarial A* | Multi-Agent Pathfinding (MAPF) with Flask
+        Adversarial A* | Multi-Agent Pathfinding (MAPF) with Flask
     </footer>
 </div>
 
-<!-- JavaScript -->
 <script src="script.js"></script>
 
 </body>

@@ -1,13 +1,7 @@
-// ============================================
-// CONFIGURATION
-// ============================================
 const API_BASE = 'http://127.0.0.1:8000/api';
 const GRID_SIZE = 21;
 let CELL_SIZE = 550 / GRID_SIZE;
 
-// ============================================
-// DOM REFERENCES
-// ============================================
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 const nodesCountSpan = document.getElementById('nodesCount');
@@ -15,17 +9,11 @@ const pathLengthSpan = document.getElementById('pathLength');
 const hunterStepsSpan = document.getElementById('hunterSteps');
 const statusMsg = document.getElementById('statusMsg');
 
-// ============================================
-// STATE
-// ============================================
 let gameState = null;
 let isRunning = false;
 let pollInterval = null;
 let dragTarget = null;
 
-// ============================================
-// API HELPERS
-// ============================================
 async function apiCall(endpoint, method = 'GET', data = null) {
     const url = `${API_BASE}${endpoint}`;
     const options = {
@@ -41,33 +29,30 @@ async function apiCall(endpoint, method = 'GET', data = null) {
         }
         return await response.json();
     } catch (error) {
-        console.error('❌ API Error:', error);
+        console.error('API Error:', error);
         throw error;
     }
 }
 
-// ============================================
-// GAME FUNCTIONS
-// ============================================
 async function getState() {
     return await apiCall('/state');
 }
 
 async function resetGame() {
     const result = await apiCall('/reset', 'POST');
-    console.log('🔄 Reset complete');
+    console.log('Reset complete');
     return result;
 }
 
 async function startGame() {
     const result = await apiCall('/start', 'POST');
-    console.log('▶️ Game started');
+    console.log('Game started');
     return result;
 }
 
 async function pauseGame() {
     const result = await apiCall('/pause', 'POST');
-    console.log('⏸ Game paused');
+    console.log('Game paused');
     return result;
 }
 
@@ -91,12 +76,9 @@ async function moveAgent(type, x, y) {
     });
 }
 
-// ============================================
-// RENDER FUNCTION
-// ============================================
 function render(state) {
     if (!state) {
-        console.warn('⚠️ No state to render');
+        console.warn('No state to render');
         return;
     }
     
@@ -104,32 +86,29 @@ function render(state) {
     const data = state.state || state;
     const runnerPath = state.runner_path || [];
     
-    // Update stats
     nodesCountSpan.textContent = state.runner_explored || 0;
     pathLengthSpan.textContent = runnerPath.length > 0 ? runnerPath.length - 1 : 0;
     hunterStepsSpan.textContent = state.hunter_steps || 0;
     
-    // Update status
     if (state.game_over) {
         if (state.winner === 'runner') {
-            statusMsg.innerHTML = '🏆 RUNNER ESCAPED! VICTORY! 🏆';
+            statusMsg.innerHTML = 'RUNNER ESCAPED! VICTORY!';
             statusMsg.style.borderLeftColor = '#2effaa';
         } else if (state.winner === 'hunter') {
-            statusMsg.innerHTML = '💀 HUNTER CAUGHT THE RUNNER! GAME OVER 💀';
+            statusMsg.innerHTML = 'HUNTER CAUGHT THE RUNNER! GAME OVER';
             statusMsg.style.borderLeftColor = '#ff4444';
         }
     } else if (data.status === 'active') {
-        statusMsg.innerHTML = '⚔️ Chase in progress...';
+        statusMsg.innerHTML = 'Chase in progress...';
         statusMsg.style.borderLeftColor = '#7caeff';
     } else if (data.status === 'paused') {
-        statusMsg.innerHTML = '⏸ Paused. Press RUN to continue.';
+        statusMsg.innerHTML = 'Paused. Press RUN to continue.';
         statusMsg.style.borderLeftColor = '#ffaa44';
     } else {
-        statusMsg.innerHTML = '🧠 Ready! Press RUN to start.';
+        statusMsg.innerHTML = 'Ready! Press RUN to start.';
         statusMsg.style.borderLeftColor = '#7caeff';
     }
     
-    // Draw grid
     drawGrid(data, runnerPath);
 }
 
@@ -144,7 +123,6 @@ function drawGrid(data, runnerPath) {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw cells
     for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
             const x = i * CELL_SIZE;
@@ -169,7 +147,6 @@ function drawGrid(data, runnerPath) {
         }
     }
     
-    // Draw Runner path
     if (runnerPath && runnerPath.length > 1) {
         ctx.beginPath();
         ctx.moveTo(runnerPath[0].x * CELL_SIZE + CELL_SIZE / 2, runnerPath[0].y * CELL_SIZE + CELL_SIZE / 2);
@@ -185,7 +162,6 @@ function drawGrid(data, runnerPath) {
         ctx.lineWidth = 1;
     }
     
-    // Draw Goal
     ctx.fillStyle = '#f5b042';
     ctx.beginPath();
     ctx.arc(goal.x * CELL_SIZE + CELL_SIZE / 2, goal.y * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE * 0.30, 0, 2 * Math.PI);
@@ -196,9 +172,8 @@ function drawGrid(data, runnerPath) {
     ctx.fill();
     ctx.fillStyle = '#ffaa33';
     ctx.font = `${CELL_SIZE * 0.5}px monospace`;
-    ctx.fillText('⭐', goal.x * CELL_SIZE + CELL_SIZE * 0.25, goal.y * CELL_SIZE + CELL_SIZE * 0.7);
+    ctx.fillText('', goal.x * CELL_SIZE + CELL_SIZE * 0.25, goal.y * CELL_SIZE + CELL_SIZE * 0.7);
     
-    // Draw Runner
     ctx.shadowBlur = 14;
     ctx.shadowColor = '#2effaa';
     ctx.fillStyle = '#3ac569';
@@ -210,7 +185,6 @@ function drawGrid(data, runnerPath) {
     ctx.arc(runner.x * CELL_SIZE + CELL_SIZE / 2, runner.y * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE * 0.16, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Draw Hunter
     ctx.shadowBlur = 14;
     ctx.shadowColor = '#ff4444';
     ctx.fillStyle = '#e34d4d';
@@ -229,9 +203,6 @@ function drawGrid(data, runnerPath) {
     ctx.shadowBlur = 0;
 }
 
-// ============================================
-// GAME LOOP
-// ============================================
 async function gameLoop() {
     if (!isRunning) return;
     
@@ -243,7 +214,7 @@ async function gameLoop() {
             stopGame();
         }
     } catch (error) {
-        console.error('❌ Game loop error:', error);
+        console.error('Game loop error:', error);
         stopGame();
     }
 }
@@ -251,22 +222,22 @@ async function gameLoop() {
 function startGameLoop() {
     if (pollInterval) return;
     
-    console.log('▶️ Starting game loop');
+    console.log('Starting game loop');
     isRunning = true;
     
     startGame().then(state => {
         render(state);
     }).catch(error => {
-        console.error('❌ Failed to start:', error);
+        console.error('Failed to start:', error);
         isRunning = false;
     });
     
     pollInterval = setInterval(gameLoop, 500);
-    document.getElementById('runBtn').textContent = '⏸ PAUSE';
+    document.getElementById('runBtn').textContent = 'PAUSE';
 }
 
 function stopGame() {
-    console.log('⏹ Stopping game');
+    console.log('Stopping game');
     isRunning = false;
     if (pollInterval) {
         clearInterval(pollInterval);
@@ -275,12 +246,9 @@ function stopGame() {
     pauseGame().then(state => {
         render(state);
     }).catch(() => {});
-    document.getElementById('runBtn').textContent = '▶ RUN';
+    document.getElementById('runBtn').textContent = 'RUN';
 }
 
-// ============================================
-// UI CONTROLS
-// ============================================
 document.getElementById('runBtn').addEventListener('click', () => {
     if (isRunning) {
         stopGame();
@@ -292,15 +260,15 @@ document.getElementById('runBtn').addEventListener('click', () => {
 document.getElementById('pauseBtn').addEventListener('click', stopGame);
 
 document.getElementById('resetBtn').addEventListener('click', async () => {
-    console.log('🔄 RESET button clicked');
+    console.log('RESET button clicked');
     stopGame();
     try {
         const state = await resetGame();
         render(state);
-        document.getElementById('runBtn').textContent = '▶ RUN';
-        statusMsg.innerHTML = '🔄 Reset complete. Press RUN to start.';
+        document.getElementById('runBtn').textContent = 'RUN';
+        statusMsg.innerHTML = 'Reset complete. Press RUN to start.';
     } catch (error) {
-        console.error('❌ Reset failed:', error);
+        console.error('Reset failed:', error);
     }
 });
 
@@ -309,9 +277,9 @@ document.getElementById('clearWallsBtn').addEventListener('click', async () => {
     try {
         const state = await clearWalls();
         render(state);
-        statusMsg.innerHTML = '🗑 All walls cleared.';
+        statusMsg.innerHTML = 'All walls cleared.';
     } catch (error) {
-        console.error('❌ Clear walls failed:', error);
+        console.error('Clear walls failed:', error);
     }
 });
 
@@ -320,15 +288,12 @@ document.getElementById('randomWallsBtn').addEventListener('click', async () => 
     try {
         const state = await randomWalls();
         render(state);
-        statusMsg.innerHTML = '🎲 Random walls generated!';
+        statusMsg.innerHTML = 'Random walls generated!';
     } catch (error) {
-        console.error('❌ Random walls failed:', error);
+        console.error('Random walls failed:', error);
     }
 });
 
-// ============================================
-// INTERACTIONS: Drag & Click
-// ============================================
 function getCellFromEvent(e) {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
@@ -423,9 +388,6 @@ async function handleCanvasUp() {
     }
 }
 
-// ============================================
-// EVENT LISTENERS
-// ============================================
 canvas.addEventListener('mousedown', handleCanvasClick);
 window.addEventListener('mousemove', handleCanvasMove);
 window.addEventListener('mouseup', handleCanvasUp);
@@ -433,22 +395,19 @@ canvas.addEventListener('touchstart', handleCanvasClick);
 window.addEventListener('touchmove', handleCanvasMove);
 window.addEventListener('touchend', handleCanvasUp);
 
-// ============================================
-// INITIAL LOAD
-// ============================================
 async function init() {
-    console.log('🚀 Initializing frontend...');
-    console.log('📍 API URL:', API_BASE);
+    console.log('Initializing frontend...');
+    console.log('API URL:', API_BASE);
     
     try {
         const state = await getState();
         render(state);
-        statusMsg.innerHTML = '🧠 Ready! Press RUN to start the chase.';
-        console.log('✅ Initialized successfully');
+        statusMsg.innerHTML = 'Ready! Press RUN to start the chase.';
+        console.log('Initialized successfully');
     } catch (error) {
-        console.error('❌ Init error:', error);
+        console.error('Init error:', error);
         statusMsg.innerHTML = `
-            ❌ Cannot connect to backend.<br>
+            Cannot connect to backend.<br>
             <small style="color:#6a7fa0;">
                 Make sure server is running on port 8000
             </small>
@@ -456,5 +415,4 @@ async function init() {
     }
 }
 
-// Start!
 init();
